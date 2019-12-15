@@ -19,8 +19,19 @@ export default class GameState {
     this.creepMap.get(role).push(creep);
   }
 
-  getCreepsForRole(role: Role): Creep[] {
-    const creepsForRole = this.creepMap.get(role);
-    return creepsForRole ? creepsForRole : [];
+  /**
+   * Get existing creeps, for the given role, and optionally select for those that are available (not spawning);
+   * @param role desired role
+   * @param available spawning or not
+   */
+  getCreepsForRole(role: Role, available?: boolean): Creep[] {
+    let creepsForRole = this.creepMap.get(role);
+    creepsForRole = creepsForRole ? creepsForRole : [];
+    if (available !== undefined) {
+      creepsForRole = creepsForRole.filter((creep: Creep) => {
+        return creep.spawning !== available;
+      });
+    }
+    return creepsForRole;
   }
 }

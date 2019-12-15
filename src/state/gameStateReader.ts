@@ -6,8 +6,8 @@ export default class GameStateReader {
     const gameState = new GameState(Game.spawns.Spawn1);
 
     Object.values(Game.creeps).forEach((creep: Creep) => {
-      if (creep.memory['role'] == Role.HARVESTER) {
-        gameState.registerCreep(creep, Role.HARVESTER);
+      if (creep.my) {
+        gameState.registerCreep(creep, creep.memory['role']);
       }
     });
 
