@@ -3,7 +3,8 @@ const path = require('path');
 module.exports = {
   mode: 'production',
   target: 'node',
-  entry: './src/main.ts',
+  entry: './main.ts',
+  context: path.resolve(__dirname, './src'),
   module: {
     rules: [
       {
@@ -14,7 +15,13 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js']
+    extensions: ['.tsx', '.ts', '.js'],
+    alias: {
+      '@act': path.resolve(__dirname, 'src/act/'),
+      '@behavior': path.resolve(__dirname, 'src/behavior/'),
+      '@roles': path.resolve(__dirname, 'src/creeps/role'),
+      '@state': path.resolve(__dirname, 'src/state/')
+    }
   },
   output: {
     path: __dirname,

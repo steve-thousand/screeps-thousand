@@ -8,15 +8,21 @@ function calculatePrice(bodyParts: BodyPartConstant[]): number {
     });
 }
 
-class RoleDefinition {
+export class RoleDefinition {
+  private role: Role;
   private name: string;
   private bodyParts: BodyPartConstant[];
   private price: number;
 
-  constructor(name: string, bodyParts: BodyPartConstant[]) {
+  constructor(role: Role, name: string, bodyParts: BodyPartConstant[]) {
+    this.role = role;
     this.name = name;
     this.bodyParts = bodyParts;
     this.price = calculatePrice(bodyParts);
+  }
+
+  getRole() {
+    return this.role;
   }
 
   getName() {
@@ -49,5 +55,13 @@ export enum Role {
 }
 
 export const RoleDefinitions = new Map<Role, RoleDefinition>([
-  [Role.HARVESTER, new RoleDefinition('harvester', [WORK, MOVE, CARRY])]
+  [
+    Role.HARVESTER,
+    new RoleDefinition(Role.HARVESTER, 'harvester', [WORK, MOVE, CARRY])
+  ],
+  [Role.UPGRADER, new RoleDefinition(Role.UPGRADER, 'upgrader', [MOVE, CLAIM])],
+  [
+    Role.BUILDER,
+    new RoleDefinition(Role.BUILDER, 'builder', [MOVE, WORK, CARRY])
+  ]
 ]);

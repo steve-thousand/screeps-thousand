@@ -1,5 +1,5 @@
-import GameState from './gameState';
-import { Role } from '../creeps/role';
+import GameState from '@state/gameState';
+import EnergyAnalyzer from '@state/energy/energyAnalyzer';
 
 export default class GameStateReader {
   getGameState(): GameState {
@@ -10,6 +10,8 @@ export default class GameStateReader {
         gameState.registerCreep(creep, creep.memory['role']);
       }
     });
+
+    gameState.setEnergyAnalysis(EnergyAnalyzer.analyze(gameState));
 
     return gameState;
   }

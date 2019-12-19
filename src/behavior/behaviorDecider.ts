@@ -1,38 +1,26 @@
-import Behavior from './behavior';
-import { SpawnNewHarvester } from './spawn/spawnBehavior';
-import { BasicHarvest } from './creep/creepBehavior';
+import Behavior from '@behavior/behavior';
+import SpawnDecider from '@behavior/spawn/spawnDecider';
+import CreepDecider from '@behavior/creep/creepDecider';
 
-import GameState from '../state/gameState';
-import { Role, RoleDefinitions } from '../creeps/role';
+import GameState from '@state/gameState';
+import ConstructionDecider from '@behavior/construction/constructionDecider';
 
-export default class BehaviorDecider {
+export interface BehaviorDecider<T extends Behavior> {
+  decideBehaviors(gameState: GameState): T[];
+}
+
+const spawnDecider = new SpawnDecider();
+const constructionDecider = new ConstructionDecider();
+const creepDecider = new CreepDecider();
+
+export default class AllBehaviorDecider implements BehaviorDecider<Behavior> {
   decideBehaviors(gameState: GameState): Behavior[] {
     let behaviors: Behavior[] = [];
 
-    const spawn = gameState.getSpawn();
-
-    const harvesters: Creep[] = gameState.getCreepsForRole(
-      Role.HARVESTER,
-      true
-    );
-
-    const harvesterBehaviors: Behavior[] = harvesters.map(
-      (harvester: Creep) => {
-        const sources: Source[] = spawn.room.find(FIND_SOURCES);
-        const closestSource = sources[0];
-        return new BasicHarvest(harvester, closestSource, spawn);
-      }
-    );
-    behaviors = behaviors.concat(harvesterBehaviors);
-
-    if (!spawn.spawning) {
-      if (spawn.energy > RoleDefinitions.get(Role.HARVESTER).getPrice()) {
-        //do we have enough harvesters?
-        if (harvesters.length < 3) {
-          behaviors.push(new SpawnNewHarvester(spawn));
-        }
-      }
-    }
+    behaviors = behaviors
+      .concat(spawnDecider.decideBehaviors(gameState))
+      .concat(constructionDecider.decideBehaviors(gameState))
+      .concat(creepDecider.decideBehaviors(gameState));
 
     return behaviors;
   }

@@ -1,8 +1,10 @@
-import { Role } from '../creeps/role';
+import { Role } from '@roles';
+import EnergyAnalysis from '@state/energy/energyAnalysis';
 
 export default class GameState {
   private spawn: StructureSpawn;
   private creepMap = new Map<Role, Creep[]>();
+  private energyAnalysis: EnergyAnalysis;
 
   constructor(spawn: StructureSpawn) {
     this.spawn = spawn;
@@ -33,5 +35,13 @@ export default class GameState {
       });
     }
     return creepsForRole;
+  }
+
+  getEnergyAnalysis() {
+    return this.energyAnalysis;
+  }
+
+  setEnergyAnalysis(energyAnalysis: EnergyAnalysis) {
+    this.energyAnalysis = energyAnalysis;
   }
 }

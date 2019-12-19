@@ -1,19 +1,5 @@
 import Behavior from '../behavior';
-import { Role, RoleDefinitions } from '../../creeps/role';
-// const uuidv1 = require('uuid/v1');
-
-class RoleDefinition {
-  private bodyParts: BodyPartConstant[];
-  static calculatePrice(roleDefinition: RoleDefinition): number {
-    return roleDefinition.bodyParts
-      .map((a: BodyPartConstant) => {
-        return BODYPART_COST[a];
-      })
-      .reduce((a, b) => {
-        return a + b;
-      });
-  }
-}
+import { RoleDefinition } from '@roles';
 
 export default abstract class SpawnBehavior implements Behavior {
   protected spawn: StructureSpawn;
@@ -26,20 +12,23 @@ export default abstract class SpawnBehavior implements Behavior {
   abstract spawnIt(): void;
 }
 
-export class SpawnNewHarvester extends SpawnBehavior {
+export class SpawnNewCreep extends SpawnBehavior {
+  private roleDefinition: RoleDefinition;
   private name: string;
 
-  constructor(spawn: StructureSpawn, name?: string) {
+  constructor(
+    spawn: StructureSpawn,
+    roleDefinition: RoleDefinition,
+    name?: string
+  ) {
     super(spawn);
-    this.name = name
-      ? name
-      : RoleDefinitions.get(Role.HARVESTER).getName() + new Date().getTime();
+    this.roleDefinition = roleDefinition;
+    this.name = name ? name : roleDefinition.getName() + new Date().getTime();
   }
 
   spawnIt() {
-    console.log('Harvester deficit, creating harvester');
-    this.spawn.createCreep([WORK, MOVE, CARRY], this.name, {
-      role: Role.HARVESTER
+    this.spawn.createCreep(this.roleDefinition.getBodyParts(), this.name, {
+      role: this.roleDefinition.getRole()
     });
   }
 }

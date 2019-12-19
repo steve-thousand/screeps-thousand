@@ -1,9 +1,9 @@
-import GameStateReader from './state/gameStateReader';
-import BehaviorDecider from './behavior/behaviorDecider';
-import Actor from './act/Actor';
+import GameStateReader from '@state/gameStateReader';
+import AllBehaviorDecider from '@behavior/behaviorDecider';
+import Actor from '@act/Actor';
 
 const gameStateReader = new GameStateReader();
-const behaviorDecider = new BehaviorDecider();
+const behaviorDecider = new AllBehaviorDecider();
 const actor = new Actor();
 
 module.exports.loop = function() {

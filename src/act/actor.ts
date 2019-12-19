@@ -1,4 +1,4 @@
-import Behavior from '../behavior/behavior';
+import Behavior from '@behavior/behavior';
 
 export default class Actor {
   act(behaviors: Behavior[]) {
