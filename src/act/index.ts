@@ -13,7 +13,6 @@ function increaseHarvesters(goal: g.IncreaseHarvesters) {
 export class Actor {
     act(goals: g.Goal[]): void {
         for (const goal of goals) {
-            console.dir("Acting on goal", goal);
             switch (goal.constructor) {
                 case g.IncreaseHarvesters:
                     increaseHarvesters(<g.IncreaseHarvesters>goal)

@@ -7,7 +7,7 @@ export type GameState = {
 export class GameStateReader {
     read(): GameState {
         return {
-            spawn: Game.spawns[0],
+            spawn: Game.spawns["Spawn1"],
             numberOfEnergySources: 5,
             numberOfHarvesters: 0
         }
