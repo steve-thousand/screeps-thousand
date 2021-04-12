@@ -1,12 +1,5 @@
 {
-  "compilerOptions": {
-    "moduleResolution": "node",
-    "baseUrl": "./",
-    "paths": {
-      "@act/*": ["src/act/*"],
-      "@behavior/*": ["src/behavior/*"],
-      "@roles": ["src/creeps/role"],
-      "@state/*": ["src/state/*"]
-    }
-  }
+  "include": [
+    "src"
+  ]
 }

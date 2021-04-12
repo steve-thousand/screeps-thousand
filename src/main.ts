@@ -1,18 +1,14 @@
-import GameStateReader from '@state/gameStateReader';
-import AllBehaviorDecider from '@behavior/behaviorDecider';
-import Actor from '@act/Actor';
+import * as state from "./state";
+import * as goal from './goal';
+import * as act from './act';
 
-const gameStateReader = new GameStateReader();
-const behaviorDecider = new AllBehaviorDecider();
-const actor = new Actor();
+const gameStateReader: state.GameStateReader = new state.GameStateReader();
+const goalDecider: goal.GoalDecider = new goal.GoalDecider();
+const actor: act.Actor = new act.Actor();
 
-module.exports.loop = function() {
-  //review game state
-  const gameState = gameStateReader.getGameState();
-
-  //decide what to do
-  const behaviors = behaviorDecider.decideBehaviors(gameState);
-
-  //do it
-  actor.act(behaviors);
+export const loop = (): void => {
+  console.log(`GAME TICK: ${Game.time}`);
+  const gameState: state.GameState = gameStateReader.read();
+  const goals: goal.Goal[] = goalDecider.decide(gameState)
+  actor.act(goals);
 };

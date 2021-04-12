@@ -1,16 +1,36 @@
 {
   "name": "anus",
   "version": "0.0.0",
+  "scripts": {
+    "build": "rollup -c",
+    "test": "jest"
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest"
+    }
+  },
   "devDependencies": {
-    "ts-loader": "^6.2.1",
-    "typescript": "^3.7.3",
-    "typescript-bundle": "^1.0.16",
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.10"
+    "@rollup/plugin-commonjs": "^18.0.0",
+    "@rollup/plugin-node-resolve": "^11.2.1",
+    "@types/jest": "^26.0.22",
+    "@types/uuid": "^8.3.0",
+    "@typescript-eslint/eslint-plugin": "^4.21.0",
+    "@typescript-eslint/parser": "^4.21.0",
+    "eslint": "^7.24.0",
+    "jest": "^26.6.3",
+    "jest-mock-extended": "^1.0.13",
+    "rollup": "^2.45.1",
+    "rollup-plugin-clear": "^2.0.7",
+    "rollup-plugin-typescript": "^1.0.1",
+    "ts-jest": "^26.5.4",
+    "typescript": "^3.7.3"
   },
   "dependencies": {
-    "@types/node": "^12.12.17",
     "@types/screeps": "^3.0.0",
-    "uuid": "^3.3.3"
+    "uuid": "^8.3.2"
   }
 }
