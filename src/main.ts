@@ -1,14 +1,20 @@
-import * as state from "./state";
-import * as goal from './goal';
-import * as act from './act';
+import { Queen } from "queen";
+import { Worker } from "worker";
+import { PheromoneService } from "pheromone"
 
-const gameStateReader: state.GameStateReader = new state.GameStateReader();
-const goalDecider: goal.GoalDecider = new goal.GoalDecider();
-const actor: act.Actor = new act.Actor();
+let queen: Queen
 
 module.exports.loop = (): void => {
   console.log(`GAME TICK: ${Game.time}`);
-  const gameState: state.GameState = gameStateReader.read();
-  const goals: goal.Goal[] = goalDecider.decide(gameState)
-  actor.act(goals);
+  if (queen === undefined) {
+    queen = new Queen(Game.spawns.Spawn1)
+  }
+  queen.makeWorker()
+
+  for (const creep of Object.values(Game.creeps)) {
+    if (Worker.isWorker(creep)) {
+      Worker.move(creep)
+    }
+    PheromoneService.drawPheromones(Game.rooms.Room1)
+  }
 };

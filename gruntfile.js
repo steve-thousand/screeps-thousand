@@ -1,5 +1,4 @@
-
-module.exports = function(grunt) {
+module.exports = function (grunt) {
     const token = grunt.option('token');
 
     grunt.loadNpmTasks('grunt-screeps');
@@ -9,7 +8,7 @@ module.exports = function(grunt) {
             options: {
                 email: 'stephentco@gmail.com',
                 token: token,
-                branch: 'ANUS',
+                branch: 'ants',
             },
             dist: {
                 src: ['dist/*.js']

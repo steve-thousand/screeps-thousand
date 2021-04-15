@@ -9,5 +9,12 @@
     "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended"
+    ],
+    "overrides": [
+        {
+            "files": [
+                "src/*.ts"
+            ]
+        }
     ]
 }
