@@ -1,4 +1,5 @@
 import * as state from '../state';
+import { EnergySourceEvaluator } from './energy';
 
 //for now just a marker interface
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -35,18 +36,36 @@ export class GoalDecider {
         // energy? enough? NEVER
 
         // how much energy in the room?
-        const numberOfEnergySources: number = gameState.numberOfEnergySources
 
-        //how many harvesters
-        const numberOfHarvesters: number = gameState.harvesters.length
+        let harvesterIndex = 0
+        const sources: Source[] = gameState.room.find(FIND_SOURCES);
 
-        if (numberOfHarvesters < numberOfEnergySources) {
-            //need more!
-            goals.push(new IncreaseHarvesters(gameState.spawn))
+        //first assign harvesters to sources
+        const harvestersBySource: Map<Id<Source>, Creep[]> = new Map()
+        for (const source of sources) {
+            if (harvesterIndex < gameState.harvesters.length) {
+                const harvester = gameState.harvesters[harvesterIndex]
+                goals.push(new Harvest(harvester, source, gameState.spawn))
+                if (!harvestersBySource.has(source.id)) {
+                    harvestersBySource.set(source.id, [])
+                }
+                harvestersBySource.get(source.id).push(harvester)
+                harvesterIndex++
+            }
         }
 
-        for(const creep of gameState.harvesters) {
-            goals.push(new Harvest(creep, gameState.room.find(FIND_SOURCES)[0], gameState.spawn))
+        //then determine if we need new ones
+        for (const source of sources) {
+            let numberOfAssignedHarvesters = 0;
+            if (harvestersBySource.has(source.id)) {
+                numberOfAssignedHarvesters = harvestersBySource.get(source.id).length
+            }
+            //TODO harcoded to one exposes mining position... fix that
+            const saturation = EnergySourceEvaluator.determineSourceSaturation(source.pos, gameState.spawn.pos, 1, numberOfAssignedHarvesters);
+            if (saturation < 1) {
+                console.log(`Source ${source.id} is not yet saturated. Adding goal to increase harvesters`)
+                goals.push(new IncreaseHarvesters(gameState.spawn))
+            }
         }
 
         return goals;
