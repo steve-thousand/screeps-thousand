@@ -3,34 +3,49 @@ export enum PheromoneType {
     ENERGY = 1, //ant has found/is carrying energy
 }
 
-type Pheromone = {
+export type Pheromone = {
     pheromoneType: PheromoneType,
     tick: number
 }
 
-type Pheromones = {
+export type Pheromones = {
     pheromonesByType: Map<PheromoneType, Pheromone>
 }
 
-const pheromoneMap: Map<RoomPosition, Pheromones> = new Map()
+function toKey(roomPosition: RoomPosition): string {
+    return JSON.stringify(roomPosition);
+}
 
 export class PheromoneService {
-    static markSpot(roomPosition: RoomPosition, pheromoneType: PheromoneType): void {
-        const pheromones: Pheromones = PheromoneService.getPheromonesAt(roomPosition)
+
+    private game: Game
+    private pheromoneMap: Map<string, Pheromones> = new Map()
+
+    constructor(game: Game) {
+        this.game = game
+    }
+
+    markSpot(roomPosition: RoomPosition, pheromoneType: PheromoneType): void {
+        const pheromones: Pheromones = this.getPheromonesAt(roomPosition)
         pheromones?.pheromonesByType.set(pheromoneType, {
             pheromoneType: pheromoneType,
-            tick: Game.time
+            tick: this.game.time
         })
-        pheromoneMap.set(roomPosition, pheromones)
+        const key: string = toKey(roomPosition);
+        this.pheromoneMap.set(key, pheromones)
     }
-    static getPheromonesAt(roomPosition: RoomPosition): Pheromones {
-        return pheromoneMap.get(roomPosition) ?? {
+    getPheromonesAt(roomPosition: RoomPosition): Pheromones {
+        const key: string = toKey(roomPosition);
+        return this.pheromoneMap.get(key) ?? {
             pheromonesByType: new Map()
         };
     }
-    static drawPheromones(room: Room): void {
-        pheromoneMap.forEach((value: Pheromones, key: RoomPosition) => {
-            Game.map.visual.circle(key, { radius: 10 })
+    drawPheromones(mapVisual: MapVisual): void {
+        this.pheromoneMap.forEach((value: Pheromones, key: string) => {
+            const roomPosition: RoomPosition = <RoomPosition>JSON.parse(key);
+            mapVisual.circle(new RoomPosition(
+                roomPosition.x, roomPosition.y, roomPosition.roomName
+            ), {})
         });
     }
 }

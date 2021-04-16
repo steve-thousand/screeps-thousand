@@ -1,4 +1,4 @@
-import { Worker } from './worker';
+import { WorkerService } from './worker';
 
 export class Queen {
     private spawn: StructureSpawn
@@ -8,7 +8,7 @@ export class Queen {
     }
 
     makeWorker(): boolean {
-        const code = this.spawn.spawnCreep([MOVE, WORK, CARRY], Worker.createName())
+        const code = this.spawn.spawnCreep([MOVE, WORK, CARRY], WorkerService.createName())
         return code === OK;
     }
 }

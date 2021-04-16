@@ -28,15 +28,21 @@ function generateMoveDirection(creep: Creep): DirectionConstant {
     }
 }
 
-export class Worker {
+export class WorkerService {
+    private pheromoneService: PheromoneService
+
+    constructor(pheromoneService: PheromoneService) {
+        this.pheromoneService = pheromoneService
+    }
+
     static createName(): string {
         return WORKER_NAME_PREFIX + uuidv4();
     }
     static isWorker(creep: Creep): boolean {
         return creep.name.startsWith(WORKER_NAME_PREFIX)
     }
-    static move(creep: Creep): void {
-        PheromoneService.markSpot(creep.pos, PheromoneType.SEEK)
+    move(creep: Creep): void {
+        this.pheromoneService.markSpot(creep.pos, PheromoneType.SEEK)
         const direction: DirectionConstant = generateMoveDirection(creep);
         creep.move(direction);
     }

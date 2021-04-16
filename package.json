@@ -11,7 +11,10 @@
     ],
     "transform": {
       "^.+\\.(ts|tsx)$": "ts-jest"
-    }
+    },
+    "setupFiles": [
+      "<rootDir>/screeps_types_mocks.js"
+    ]
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^18.0.0",
