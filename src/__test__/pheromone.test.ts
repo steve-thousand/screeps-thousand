@@ -1,4 +1,4 @@
-import { PheromoneService, PheromoneVisualizer, Pheromones, PheromoneType, MAX_AGE } from "../pheromone"
+import { PheromoneService, PheromoneVisualizer, PheromoneOpacity, Pheromones, PheromoneType, MAX_AGE } from "../pheromone"
 
 describe('PheromoneVisualizer tests', function () {
     test('Just created, should be full strength', function () {
@@ -48,7 +48,7 @@ describe('PheromoneVisualizer tests', function () {
             time: 0
         })
         expect(settings).toStrictEqual({
-            opacity: .5,
+            opacity: PheromoneOpacity.SEEK,
             radius: .5
         })
     })
@@ -59,7 +59,7 @@ describe('PheromoneVisualizer tests', function () {
             time: 0
         })
         expect(settings).toStrictEqual({
-            opacity: .25,
+            opacity: PheromoneOpacity.SEEK / 2,
             radius: .25
         })
     })
@@ -98,7 +98,7 @@ describe('PheromonService tests', function () {
             pheromoneType: PheromoneType.SEEK,
             time: 1
         })
-        expect(pheromones.pheromonesByType[PheromoneType.ENERGY]).toBeUndefined
+        expect(pheromones.pheromonesByType[PheromoneType.SEEK]).toBeUndefined
     })
     test('pheromones should be able to be overwritten', function () {
         Game.time = 1
@@ -140,14 +140,14 @@ describe('PheromonService tests', function () {
 
         pheromoneService.drawPheromones()
         expect(mockCallback.mock.calls[0][0]).toMatchObject({ x: 1, y: 2, roomName: 'test' });
-        expect(mockCallback.mock.calls[0][1]).toMatchObject({ radius: .5, opacity: .5 });
+        expect(mockCallback.mock.calls[0][1]).toMatchObject({ radius: .50, opacity: PheromoneOpacity.SEEK });
 
         //draw half age later
         Game.time = MAX_AGE / 2
 
         pheromoneService.drawPheromones()
         expect(mockCallback.mock.calls[1][0]).toMatchObject({ x: 1, y: 2, roomName: 'test' });
-        expect(mockCallback.mock.calls[1][1]).toMatchObject({ radius: .25, opacity: .25 });
+        expect(mockCallback.mock.calls[1][1]).toMatchObject({ radius: .25, opacity: PheromoneOpacity.SEEK / 2 });
 
         //draw full age later
         Game.time = MAX_AGE
@@ -170,8 +170,8 @@ describe('PheromonService tests', function () {
 
         pheromoneService.drawPheromones()
         expect(mockCallback.mock.calls[0][0]).toMatchObject({ x: 1, y: 2, roomName: 'test' });
-        expect(mockCallback.mock.calls[0][1]).toMatchObject({ radius: .25, opacity: .25 });
+        expect(mockCallback.mock.calls[0][1]).toMatchObject({ radius: .25, opacity: PheromoneOpacity.SEEK / 2 });
         expect(mockCallback.mock.calls[1][0]).toMatchObject({ x: 2, y: 4, roomName: 'test' });
-        expect(mockCallback.mock.calls[1][1]).toMatchObject({ radius: .5, opacity: .5 });
+        expect(mockCallback.mock.calls[1][1]).toMatchObject({ radius: .50, opacity: PheromoneOpacity.SEEK });
     })
 })

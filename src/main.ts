@@ -17,6 +17,6 @@ module.exports.loop = (): void => {
     if (WorkerService.isWorker(creep)) {
       workerService.move(creep)
     }
-    pheromoneService.drawPheromones(Game.map.visual)
+    pheromoneService.drawPheromones()
   }
 };

@@ -28,6 +28,11 @@ function toKey(roomPosition: RoomPosition): string {
 
 export const MAX_AGE = 20
 
+export enum PheromoneOpacity {
+    SEEK = .08,
+    ENERGY = .25
+}
+
 export class PheromoneVisualizer {
     static determineStrength(pheromone: Pheromone): number {
         const age = Game.time - pheromone.time
@@ -36,9 +41,20 @@ export class PheromoneVisualizer {
         }
         return (MAX_AGE - age) / MAX_AGE
     }
+    private static getOpacity(pheromoneType: PheromoneType): number {
+        switch (pheromoneType) {
+            case PheromoneType.SEEK:
+                return PheromoneOpacity.SEEK
+            case PheromoneType.ENERGY:
+                return PheromoneOpacity.ENERGY
+            default:
+                return .10
+        }
+    }
     static getDrawSettings(pheromone: Pheromone): MapCircleStyle {
         const strength = PheromoneVisualizer.determineStrength(pheromone);
-        return { opacity: strength <= 0 ? 0 : (.5 * strength), radius: strength <= 0 ? 0 : (.5 * strength) }
+        const opacity: number = this.getOpacity(pheromone.pheromoneType);
+        return { opacity: strength <= 0 ? 0 : (opacity * strength), radius: strength <= 0 ? 0 : (.5 * strength) }
     }
 }
 
