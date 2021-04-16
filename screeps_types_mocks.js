@@ -16,6 +16,10 @@ global.Game = new function () {
     }
 };
 
+global.Memory = new function () {
+
+};
+
 global.RoomPosition = function (x, y, roomName) {
     this.x = x;
     this.y = y;

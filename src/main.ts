@@ -3,7 +3,7 @@ import { WorkerService } from "worker";
 import { PheromoneService } from "pheromone"
 
 let queen: Queen
-const pheromoneService: PheromoneService = new PheromoneService(Game)
+const pheromoneService: PheromoneService = new PheromoneService(Game, Memory)
 const workerService: WorkerService = new WorkerService(pheromoneService)
 
 module.exports.loop = (): void => {
