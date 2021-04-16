@@ -1,5 +1,6 @@
 declare global {
     interface Memory {
+        pheromoneMap: PheromoneMap
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         [key: string]: any
     }
@@ -12,32 +13,42 @@ export enum PheromoneType {
 
 export type Pheromone = {
     pheromoneType: PheromoneType,
-    tick: number
+    time: number
 }
 
 export type Pheromones = {
     pheromonesByType: { [key: number]: Pheromone }
 }
 
+export type PheromoneMap = { [key: string]: Pheromones }
+
 function toKey(roomPosition: RoomPosition): string {
     return JSON.stringify(roomPosition);
 }
 
-export class PheromoneService {
+export const MAX_AGE = 20
 
-    private game: Game
-    private memory: Memory
-
-    constructor(game: Game, memory: Memory) {
-        this.game = game
-        this.memory = memory
+export class PheromoneVisualizer {
+    static determineStrength(pheromone: Pheromone): number {
+        const age = Game.time - pheromone.time
+        if (age > MAX_AGE || age < 0) {
+            return 0;
+        }
+        return (MAX_AGE - age) / MAX_AGE
     }
+    static getDrawSettings(pheromone: Pheromone): MapCircleStyle {
+        const strength = PheromoneVisualizer.determineStrength(pheromone);
+        return { opacity: strength <= 0 ? 0 : (.5 * strength), radius: strength <= 0 ? 0 : (.5 * strength) }
+    }
+}
+
+export class PheromoneService {
 
     markSpot(roomPosition: RoomPosition, pheromoneType: PheromoneType): void {
         const pheromones: Pheromones = this.getPheromonesAt(roomPosition)
         pheromones.pheromonesByType[pheromoneType] = {
             pheromoneType: pheromoneType,
-            tick: this.game.time
+            time: 0 + Game.time
         }
         const key: string = toKey(roomPosition);
         const pheromoneMap = this.getPheromoneMap()
@@ -46,7 +57,7 @@ export class PheromoneService {
     }
     getPheromonesAt(roomPosition: RoomPosition): Pheromones {
         const key: string = toKey(roomPosition);
-        const pheromones: { [key: string]: Pheromones } = this.getPheromoneMap();
+        const pheromones: PheromoneMap = this.getPheromoneMap();
         if (!pheromones[key]) {
             pheromones[key] = {
                 pheromonesByType: {}
@@ -54,21 +65,30 @@ export class PheromoneService {
         }
         return pheromones[key]
     }
-    drawPheromones(mapVisual: MapVisual): void {
-        for (const key of Object.keys(this.getPheromoneMap())) {
+    drawPheromones(): void {
+        const pheromoneMap: PheromoneMap = this.getPheromoneMap()
+        for (const key of Object.keys(pheromoneMap)) {
             const roomPosition: RoomPosition = <RoomPosition>JSON.parse(key);
-            mapVisual.circle(new RoomPosition(
-                roomPosition.x, roomPosition.y, roomPosition.roomName
-            ), {})
+            const pheromones: Pheromones = pheromoneMap[key]
+            if (PheromoneType.SEEK in pheromones.pheromonesByType) {
+                const pheromone = pheromones.pheromonesByType[PheromoneType.SEEK]
+                const drawSettings = PheromoneVisualizer.getDrawSettings(pheromone);
+                if (drawSettings.radius !== undefined && drawSettings.radius > 0) {
+                    Game.map.visual.circle(
+                        new RoomPosition(roomPosition.x, roomPosition.y, roomPosition.roomName),
+                        drawSettings
+                    )
+                }
+            }
         }
     }
-    private setPheromoneMap(map: { [key: string]: Pheromones }): void {
-        this.memory.pheromoneMap = map
+    private setPheromoneMap(map: PheromoneMap): void {
+        Memory.pheromoneMap = map
     }
-    private getPheromoneMap(): { [key: string]: Pheromones } {
-        if (!("pheromoneMap" in this.memory)) {
-            this.memory.pheromoneMap = {}
+    private getPheromoneMap(): PheromoneMap {
+        if (!("pheromoneMap" in Memory)) {
+            Memory.pheromoneMap = {}
         }
-        return this.memory.pheromoneMap
+        return Memory.pheromoneMap
     }
 }
