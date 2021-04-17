@@ -1,8 +1,10 @@
 import { Queen } from "queen";
+import { CreepService, CreepMap } from "creep";
 import { WorkerService } from "worker";
 import { PheromoneService } from "pheromone"
 
 let queen: Queen
+const creepService: CreepService = new CreepService()
 const pheromoneService: PheromoneService = new PheromoneService()
 const workerService: WorkerService = new WorkerService(pheromoneService)
 
@@ -13,10 +15,14 @@ module.exports.loop = (): void => {
   }
   queen.makeWorker()
 
-  for (const creep of Object.values(Game.creeps)) {
-    if (WorkerService.isWorker(creep)) {
-      workerService.move(creep)
+  const creepMap: CreepMap = creepService.getCreepMap(Object.values(Game.creeps))
+
+  for (const worker of creepMap.workers) {
+    try {
+      workerService.move(worker)
+    } catch (e) {
+      console.log(e)
     }
-    pheromoneService.drawPheromones()
   }
+  pheromoneService.drawPheromones()
 };

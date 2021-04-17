@@ -16,7 +16,20 @@ global.Game = new function () {
     }
 };
 
+global.TOP = 1
+global.TOP_RIGHT = 2;
+global.RIGHT = 3;
+global.BOTTOM_RIGHT = 4;
+global.BOTTOM = 5;
+global.BOTTOM_LEFT = 6;
+global.LEFT = 7;
+global.TOP_LEFT = 8;
+
 global.Memory = new function () {
+
+};
+
+global.CreepMemory = function () {
 
 };
 
@@ -25,3 +38,7 @@ global.RoomPosition = function (x, y, roomName) {
     this.y = y;
     this.roomName = roomName;
 };
+
+global.Creep = function () {
+    this.memory = new CreepMemory()
+}
