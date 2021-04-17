@@ -14,6 +14,7 @@ global.Game = new function () {
             circle: () => { }
         }
     }
+    this.creeps = {}
 };
 
 global.TOP = 1

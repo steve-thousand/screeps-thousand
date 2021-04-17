@@ -26,7 +26,7 @@ function toKey(roomPosition: RoomPosition): string {
     return JSON.stringify(roomPosition);
 }
 
-export const MAX_AGE = 20
+export const MAX_AGE = 100
 
 export enum PheromoneOpacity {
     SEEK = .08,

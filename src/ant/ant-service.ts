@@ -1,7 +1,7 @@
 import { Worker } from '../worker'
-import { CreepType } from './creep-type'
+import { AntType } from './ant-type'
 
-export type CreepMap = {
+export type AntMap = {
     workers: Worker[]
 }
 
@@ -11,24 +11,24 @@ export type CreepMap = {
 function ensureInitialized(creep: Creep) {
     if (creep.memory.type === undefined) {
         //for now it's easy, there's only one
-        creep.memory.type = CreepType.WORKER
+        creep.memory.type = AntType.WORKER
         Worker.initMemory(creep)
     }
 }
 
-export class CreepService {
+export class AntService {
 
     /**
-     * Gets us the creeps already divided by their roles
+     * Gets us the ants already divided by their roles
      */
-    getCreepMap(creeps: Creep[]): CreepMap {
+    getAntMap(): AntMap {
         const creepMap = {
             workers: [] as Worker[]
         }
-        for (const creep of creeps) {
+        for (const creep of Object.values(Game.creeps)) {
             ensureInitialized(creep)
             switch (creep.memory.type) {
-                case CreepType.WORKER:
+                case AntType.WORKER:
                     creepMap.workers.push(new Worker(creep))
                     break
                 default:

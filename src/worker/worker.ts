@@ -2,7 +2,8 @@ import { WorkerState, WorkerStateType } from './worker-state'
 import { MovementService } from './movement'
 
 //potentially dangerous circular dependency situation
-import { CreepWrapper } from '../creep/creep-wrapper'
+import { AntWrapper } from '../ant/ant-wrapper'
+import { Ant } from '../ant/ant'
 
 
 declare global {
@@ -43,22 +44,22 @@ class WorkerMemory {
     }
 }
 
-export class Worker extends CreepWrapper {
+export class Worker extends AntWrapper {
 
     private workerMemory: WorkerMemory
 
-    constructor(creep: Creep) {
-        super(creep)
-        this.workerMemory = new WorkerMemory(creep.memory)
+    constructor(ant: Ant) {
+        super(ant)
+        this.workerMemory = new WorkerMemory(ant.memory)
     }
 
-    static initMemory(creep: Creep): void {
+    static initMemory(ant: Ant): void {
         //initialize state
-        creep.memory.state = {
+        ant.memory.state = {
             type: WorkerStateType.SEEK,
             time: Game.time
         }
-        creep.memory.direction = MovementService.generateRandomDirection()
+        ant.memory.direction = MovementService.generateRandomDirection()
     }
 
     getState(): WorkerState {
@@ -71,6 +72,6 @@ export class Worker extends CreepWrapper {
 
     moveInDirection(direction: DirectionConstant): void {
         this.workerMemory.setDirection(direction)
-        this.creep.move(direction);
+        this.ant.move(direction);
     }
 }
